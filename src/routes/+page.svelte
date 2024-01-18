@@ -4,7 +4,6 @@
     import * as cheerio from 'cheerio';
     import '../app.css';
 
-
     let data = "";
     let parsed = Array();
 
