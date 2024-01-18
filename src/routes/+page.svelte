@@ -2,6 +2,8 @@
     import { onMount } from "svelte";
     import axios from "axios";
     import * as cheerio from 'cheerio';
+    import '../app.css';
+
 
     let data = "";
     let parsed = Array();
@@ -14,6 +16,7 @@
         const selector = '.matches-list > .match-row';
         const matches = $(selector);
 
+        parsed = Array();
         matches.each((i, match) => {
             let participantString = $(match).find("span.participant").text()
             let splits = participantString.trim().split(/\n+/);
@@ -38,18 +41,17 @@
     onMount(fetchData);
 </script>
 
-<button on:click={fetchData}>Fetch Data</button>
 
 
-<table>
+<table class="table">
     <thead>
         <tr>
             <th>Number</th>
             <th>ETA</th>
-            <th>Participant 1</th>
-            <th>Club 1</th>
-            <th>Participant 2</th>
-            <th>Club 2</th>
+            <th>Our Guy</th>
+            <!-- <th>Club 1</th> -->
+            <th>Opponent</th>
+            <th>Opponent club</th>
         </tr>
     </thead>
     <tbody>
@@ -58,7 +60,7 @@
             <td>{entry.number}</td>
             <td>{entry.eta}</td>
             <td>{entry.participants.participant1}</td>
-            <td>{entry.participants.club1}</td>
+            <!-- <td>{entry.participants.club1}</td> -->
             <td>{entry.participants.participant2}</td>
             <td>{entry.participants.club2}</td>
         </tr>
@@ -67,3 +69,4 @@
 </table>
 
 
+<!-- <button class="btn" on:click={fetchData}>Fetch Data</button> -->
