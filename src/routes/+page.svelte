@@ -41,31 +41,30 @@
 </script>
 
 
-
+<div class="rounded-b-box rounded-se-box relative overflow-x-auto">
 <table class="table">
-    <thead>
-        <tr>
-            <th>Number</th>
-            <th>ETA</th>
-            <th>Our Guy</th>
-            <!-- <th>Club 1</th> -->
-            <th>Opponent</th>
-            <th>Opponent club</th>
-        </tr>
-    </thead>
-    <tbody>
-        {#each parsed as entry}
-        <tr>
-            <td>{entry.number}</td>
-            <td>{entry.eta}</td>
-            <td>{entry.participants.participant1}</td>
-            <!-- <td>{entry.participants.club1}</td> -->
-            <td>{entry.participants.participant2}</td>
-            <td>{entry.participants.club2}</td>
-        </tr>
-        {/each}
-    </tbody>
-</table>
-
-
+        <thead>
+            <tr>
+                <th>Number</th>
+                <th>ETA</th>
+                <th>Our Guy</th>
+                <!-- <th>Club 1</th> -->
+                <th>Opponent</th>
+                <th>Opponent club</th>
+            </tr>
+        </thead>
+        <tbody>
+            {#each parsed as entry}
+            <tr>
+                <td>{entry.number}</td>
+                <td>{entry.eta}</td>
+                <td>{entry.participants.participant1}</td>
+                <!-- <td>{entry.participants.club1}</td> -->
+                <td>{entry.participants.participant2}</td>
+                <td>{entry.participants.club2}</td>
+            </tr>
+            {/each}
+        </tbody>
+    </table>
+</div>
 <!-- <button class="btn" on:click={fetchData}>Fetch Data</button> -->
