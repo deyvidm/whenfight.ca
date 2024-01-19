@@ -3,7 +3,7 @@
     import axios from "axios";
     import * as cheerio from 'cheerio';
     import '../app.css';
-    import {parseParticipants} from "../lib/shared.js";
+    import {parseParticipants} from "$lib/shared.js";
     import dudes from '$lib/current-dudes.json'
     
     let parsed = Array();
