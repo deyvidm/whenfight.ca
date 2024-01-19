@@ -3,6 +3,7 @@
     import axios from "axios";
     import * as cheerio from "cheerio";
     import "../../app.css";
+    import {parseParticipants} from "$lib/shared.js";
 
 
     let parsed = Array();
@@ -33,18 +34,8 @@
                 let participantString = $(match)
                     .find("span.participant")
                     .text();
-                let splits = participantString.trim().split(/\n+/);
-                let participants = {
-                    participant1: splits[0],
-                    club1: splits[1],
-                    participant2: splits[2],
-                    club2: splits[3],
-                };
-                if (splits[1] == "Current BJJ") {
-                    parsed.push(splits[0]);
-                } else {
-                    parsed.push(splits[2]);
-                }
+                let participants = parseParticipants(participantString);
+                parsed.push(participants.p1);
             });
             parsed = [...new Set(parsed)];
             page++;

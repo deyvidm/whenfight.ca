@@ -3,12 +3,14 @@
     import axios from "axios";
     import * as cheerio from 'cheerio';
     import '../app.css';
-
-    let data = "";
+    import {parseParticipants} from "../lib/shared.js";
+    import dudes from '$lib/current-dudes.json'
+    
     let parsed = Array();
+    let who = "Michael Mitkov";
 
     async function fetchData() {
-        const url = 'https://corsproxy.io/?' + encodeURIComponent('https://grapplingindustries.smoothcomp.com/en/event/13528/schedule/matchlist?search=michael+mitkov&club=47454&catid=0&mat=&country='); 
+        const url = 'https://corsproxy.io/?' + encodeURIComponent('https://grapplingindustries.smoothcomp.com/en/event/13528/schedule/matchlist?search='+who+'&club=47454&catid=0&mat=&country='); 
         const response = await axios.get(url)
         const $ = cheerio.load(response.data);
         // select all elems with class 'match-row' inside elems with class 'matches-list'
@@ -18,14 +20,7 @@
         parsed = Array();
         matches.each((i, match) => {
             let participantString = $(match).find("span.participant").text()
-            let splits = participantString.trim().split(/\n+/);
-            console.log(splits)
-            let participants = {
-                "participant1": splits[0],
-                "club1": splits[1],
-                "participant2": splits[2],
-                "club2": splits[3]
-            }
+            const participants = parseParticipants(participantString)
 
             parsed.push({
                 number: $(match).find('.number').text(),
@@ -36,10 +31,16 @@
         parsed = parsed;
         console.log(parsed);
     }
-
     onMount(fetchData);
+
 </script>
 
+<select bind:value={who} on:change={fetchData} class="select select-bordered w-full max-w-xs">
+    <option disabled selected>Who's grappling?</option>
+    {#each dudes as dude}
+        <option value={dude}>{dude}</option>
+    {/each}
+</select>
 
 <div class="rounded-b-box rounded-se-box relative overflow-x-auto">
 <table class="table">
@@ -58,9 +59,9 @@
             <tr>
                 <td>{entry.number}</td>
                 <td>{entry.eta}</td>
-                <td>{entry.participants.participant1}</td>
+                <td>{entry.participants.p1}</td>
                 <!-- <td>{entry.participants.club1}</td> -->
-                <td>{entry.participants.participant2}</td>
+                <td>{entry.participants.p2}</td>
                 <td>{entry.participants.club2}</td>
             </tr>
             {/each}
