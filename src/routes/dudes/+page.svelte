@@ -4,9 +4,9 @@
     import * as cheerio from "cheerio";
     import "../../app.css";
 
-    let data = "";
+
     let parsed = Array();
-    let matches = Array();
+    let matches;
     let page = 1;
     let done = false;
     
@@ -27,7 +27,7 @@
 
             // select all elems with class 'match-row' inside elems with class 'matches-list'
             const selector = ".matches-list > .match-row";
-            matches = $(selector);
+            matches = $(selector)
 
             matches.each((i, match) => {
                 let participantString = $(match)
@@ -47,7 +47,6 @@
                 }
             });
             parsed = [...new Set(parsed)];
-            // console.log(parsed);
             page++;
         } while (matches.length > 0);
         parsed = parsed.sort();
