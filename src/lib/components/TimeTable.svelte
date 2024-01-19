@@ -5,14 +5,23 @@
     import { parseParticipants } from "$lib/shared.js";
     import dudes from "$lib/current-dudes.json";
 
-    export let who = "";
+    /**
+     * @type {string}
+     */
+     export let who;
     let parsed = Array();
     let isLoading = false;
 
+    $: if (who) {
+        fetchData();
+    }
+
     async function fetchData() {
-        if (who.trim() == "") {
+        if (who == "who") {
             return;
         }
+        console.log("fetching data for", who)
+
         isLoading = true;
         const url =
             "https://corsproxy.io/?" +
@@ -45,25 +54,27 @@
         });
         parsed = parsed;
         isLoading = false;
-        // console.log(parsed);
     }
     onMount(fetchData);
 </script>
 
 <div class="rounded-b-box rounded-se-box relative overflow-x-auto">
-    <div class="card w-150 bg-base-100 shadow-xl">
+    <span></span>
+    <div class="card w-150 bg-base-100 shadow-xl space-y-4">
+        <div class="artboard phone"></div>
+
         <select
             bind:value={who}
-            on:change={fetchData}
             class="select select-bordered w-full max-w"
         >
-            <option disabled selected>Who's grappling?</option>
+            <option disabled selected value="who">Who's grappling?</option>
             {#each dudes as dude}
                 <option value={dude}>{dude}</option>
             {/each}
         </select>
-
+        
         <button class="btn" on:click={fetchData}>Refresh</button>
+
         <table class="table table-zebra table-sm table-auto">
             <thead>
                 <tr>
