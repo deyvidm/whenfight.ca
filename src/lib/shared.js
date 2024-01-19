@@ -19,4 +19,3 @@ export function parseParticipants(pString) {
     }
     return participants
 }
-
