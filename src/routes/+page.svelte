@@ -1,5 +1,5 @@
 <script>
-    import TimeTable from "$lib/components/TimeTable.svelte";
+    import HomePage from "$lib/components/HomePage.svelte";
     import { onMount } from "svelte";
 
     let who = "who"
@@ -20,5 +20,5 @@
 <div
     class="rounded-b-box rounded-se-box relative overflow-x-auto flex items-center"
 >
-    <TimeTable bind:who={who}></TimeTable>
+    <HomePage bind:who={who}></HomePage>
 </div>
