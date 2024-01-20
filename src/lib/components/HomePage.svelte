@@ -23,6 +23,18 @@
         if (who == "who") {
             return;
         }
+        parsed = [];
+
+        if (who == "everybody") {
+            dudes.forEach(dude => {
+                fetchDudeData([dude]).then(resp => {
+                    parsed = [...parsed, ...resp.data];
+                    parsed = parsed.sort((a,b)=>{
+                        return new Date(a.isodate) - new Date(b.isodate);
+                    })
+                });
+            }); 
+        }
         fetchDudeData([who]).then(resp => {
             parsed = [...resp.data];
         });
@@ -38,6 +50,7 @@
             class="select select-bordered w-full max-w"
         >
             <option disabled selected value="who">Who's grappling?</option>
+            <option value="everybody">Everybody</option>
             {#each dudes as dude}
                 <option value={dude}>{dude}</option>
             {/each}
