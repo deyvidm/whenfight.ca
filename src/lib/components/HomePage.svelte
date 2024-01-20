@@ -30,7 +30,7 @@
                 fetchDudeData([dude]).then(resp => {
                     parsed = [...parsed, ...resp.data];
                     parsed = parsed.sort((a,b)=>{
-                        return new Date(a.isodate) - new Date(b.isodate);
+                        return new Date(a.isodate).getTime() - new Date(b.isodate).getTime();
                     })
                 });
             }); 
