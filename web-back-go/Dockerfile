@@ -4,12 +4,6 @@ FROM golang:latest
 # Set the working directory inside the container
 WORKDIR /app
 
-# Install Python 3.12 and pip
-RUN apt-get update && apt-get install -y python3.12 python3-pip
-
-# Install BeautifulSoup4
-RUN pip3 install beautifulsoup4
-
 # Copy the Go module files
 COPY go.mod go.sum ./
 
