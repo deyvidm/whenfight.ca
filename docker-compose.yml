@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  redis:
+    image: redis:latest
+    ports:
+      - 6379:6379
+
+  web-front:
+    build:
+      context: ./web-front
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - redis
+
+  web-back-go:
+    build:
+      context: ./web-back-go
+      dockerfile: Dockerfile
+    ports:
+      - 8080:8080
+    depends_on:
+      - redis
