@@ -5,7 +5,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
-	"os/exec"
+	"sort"
+	"sync"
 	"time"
 
 	"github.com/go-redis/redis"
@@ -28,7 +29,7 @@ func main() {
 	if err := checkRedisConnection(); err != nil {
 		panic(err)
 	}
-	http.HandleFunc("/fetchDudeInfo", fetchDudeInfo)
+	http.HandleFunc("/fetchDudeInfo", handleFetchDudeInfo)
 	http.ListenAndServe(":8080", nil)
 }
 func checkRedisConnection() error {
@@ -44,7 +45,7 @@ func checkRedisConnection() error {
 	return nil
 }
 
-func fetchDudeInfo(w http.ResponseWriter, r *http.Request) {
+func handleFetchDudeInfo(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
 		return
@@ -65,27 +66,64 @@ func fetchDudeInfo(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	val, err := redisClient.Get(req.Participants[0]).Result()
-	if err == redis.Nil {
-		out, err := exec.Command("python", "scrape.py", req.Participants[0]).Output()
-		if err != nil {
-			http.Error(w, "Error running Python script",
-				http.StatusInternalServerError)
-			return
-		}
+	var results []map[string]interface{}
+	var wg sync.WaitGroup
 
-		val = string(out)
-		err = redisClient.Set(req.Participants[0], val, 10*time.Second).Err()
-		if err != nil {
-			http.Error(w, "Error setting value in Redis",
-				http.StatusInternalServerError)
-			return
-		}
-	} else if err != nil {
-		http.Error(w, "Error getting value from Redis",
+	for _, p := range req.Participants {
+		wg.Add(1)
+		go func(participant string) {
+			defer wg.Done()
+
+			var dudeInfo []map[string]interface{}
+			val, err := redisClient.Get(participant).Result()
+			if err == redis.Nil {
+				fmt.Println("Cache miss for", participant)
+				dudeInfo, err = fetchDudeInfo(req.EventID, participant, req.ClubID)
+				if err != nil {
+					fmt.Printf("Error running Python script for participant %s: %v\n", participant, err)
+					return
+				}
+
+				val, err := json.Marshal(dudeInfo)
+				if err != nil {
+					fmt.Printf("Error marshalling JSON for participant %s: %v\n", participant, err)
+					return
+				}
+
+				err = redisClient.Set(participant, string(val), 10*time.Second).Err()
+				if err != nil {
+					fmt.Printf("Error setting value in Redis for participant %s: %v\n", participant, err)
+					return
+				}
+			} else if err != nil {
+				fmt.Printf("Error getting value from Redis for participant %s: %v\n", participant, err)
+				return
+			} else {
+				fmt.Println("Cache hit for", participant)
+				err = json.Unmarshal([]byte(val), &dudeInfo)
+				if err != nil {
+					fmt.Printf("Error unmarshalling JSON for participant %s: %v\n", participant, err)
+					return
+				}
+			}
+			results = append(results, dudeInfo...)
+		}(p)
+	}
+
+	wg.Wait()
+
+	sort.Slice(results, func(i, j int) bool {
+		isodate1 := results[i]["isodate"].(string)
+		isodate2 := results[j]["isodate"].(string)
+		return isodate1 < isodate2
+	})
+
+	jsonResult, err := json.Marshal(results)
+	if err != nil {
+		http.Error(w, "Error marshalling result to JSON",
 			http.StatusInternalServerError)
 		return
 	}
-
-	fmt.Fprint(w, val)
+	w.Header().Set("Content-Type", "application/json")
+	w.Write(jsonResult)
 }
