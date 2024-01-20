@@ -28,6 +28,7 @@
         }
 
         parsed = [];
+        let doneDudes = 0
         let dudes = [who];
         if (who == "everybody") {   
             dudes = currentdudes;
@@ -38,9 +39,11 @@
                     parsed = parsed.sort((a,b)=>{
                         return new Date(a.isodate).getTime() - new Date(b.isodate).getTime();
                     })
-                });
+                }).finally(()=>{
+                    doneDudes++;
+                })
             }); 
-        isLoaded = true;   
+        isLoaded = parsed.length == doneDudes  
     }
     onMount(fetchData);
 </script>

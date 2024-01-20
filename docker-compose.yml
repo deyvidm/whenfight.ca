@@ -6,15 +6,6 @@ services:
     ports:
       - 6379:6379
 
-  web-front:
-    build:
-      context: ./web-front
-      dockerfile: Dockerfile
-    ports:
-      - 80:80
-    depends_on:
-      - redis
-
   web-back:
     build:
       context: ./web-back
@@ -23,3 +14,12 @@ services:
       - 8080:8080
     depends_on:
       - redis
+  
+  web-front:
+    build:
+      context: ./web-front
+      dockerfile: Dockerfile
+    ports:
+      - 80:80
+    depends_on:
+      - web-back
