@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"log"
 	"net/http"
 	"sort"
 	"sync"
@@ -22,13 +23,28 @@ var redisClient *redis.Client
 
 func main() {
 	redisClient = redis.NewClient(&redis.Options{
-		Addr:     "localhost:6379",
+		Addr:     "redis:6379",
 		Password: "", // no password set
 		DB:       0,  // use default DB
 	})
-	if err := checkRedisConnection(); err != nil {
-		panic(err)
+
+	// Wait for Redis to start
+	retryCount := 0
+	for {
+		err := checkRedisConnection()
+		if err == nil {
+			break
+		}
+
+		if retryCount >= 10 {
+			log.Fatal("Failed to connect to Redis after 10 retries, exiting.")
+		}
+
+		retryCount++
+		log.Println("Waiting for Redis to start...")
+		time.Sleep(2 * time.Second)
 	}
+
 	http.HandleFunc("/fetchDudeInfo", handleFetchDudeInfo)
 	http.ListenAndServe(":8080", nil)
 }
