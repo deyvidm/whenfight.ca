@@ -1,6 +1,6 @@
 <script>
     import { onMount } from "svelte";
-    import dudes from "$lib/current-dudes.json";
+    import currentdudes from "$lib/current-dudes.json";
     import TimeTable from "./TimeTable.svelte";
     import {fetchDudeData} from "$lib/shared.js";
 
@@ -9,24 +9,30 @@
      */
      export let who;
     let parsed = Array();
-
+    let isLoaded = false
     $: if (who) {
         refresh()
     }
 
     function refresh(){
         parsed = [];
+        isLoaded = false;
         fetchData()
     }
 
     async function fetchData() {
+        isLoaded = false;
         if (who == "who") {
+            isLoaded = true;   
             return;
         }
-        parsed = [];
 
-        if (who == "everybody") {
-            dudes.forEach(dude => {
+        parsed = [];
+        let dudes = [who];
+        if (who == "everybody") {   
+            dudes = currentdudes;
+        }
+        dudes.forEach(dude => {
                 fetchDudeData([dude]).then(resp => {
                     parsed = [...parsed, ...resp.data];
                     parsed = parsed.sort((a,b)=>{
@@ -34,10 +40,7 @@
                     })
                 });
             }); 
-        }
-        fetchDudeData([who]).then(resp => {
-            parsed = [...resp.data];
-        });
+        isLoaded = true;   
     }
     onMount(fetchData);
 </script>
@@ -51,13 +54,13 @@
         >
             <option disabled selected value="who">Who's grappling?</option>
             <option value="everybody">Everybody</option>
-            {#each dudes as dude}
+            {#each currentdudes as dude}
                 <option value={dude}>{dude}</option>
             {/each}
         </select>
         
         <button class="btn" on:click={refresh}>Refresh</button>
 
-        <TimeTable parsed={parsed} ></TimeTable>
+        <TimeTable isLoaded={isLoaded} parsed={parsed} ></TimeTable>
     </div>
 </div>
