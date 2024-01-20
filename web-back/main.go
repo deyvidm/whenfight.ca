@@ -11,6 +11,8 @@ import (
 	"time"
 
 	"github.com/go-redis/redis"
+	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 type Request struct {
@@ -45,9 +47,13 @@ func main() {
 		time.Sleep(2 * time.Second)
 	}
 
-	http.HandleFunc("/fetchDudeInfo", handleFetchDudeInfo)
-	http.ListenAndServe(":8080", nil)
+	// Create a new router using gorilla/mux and enable CORS
+	router := mux.NewRouter()
+	router.HandleFunc("/fetchDudeInfo", handleFetchDudeInfo)
+	corsRouter := cors.Default().Handler(router)
+	log.Fatal(http.ListenAndServe(":8080", corsRouter))
 }
+
 func checkRedisConnection() error {
 	pong, err := redisClient.Ping().Result()
 	if err != nil {

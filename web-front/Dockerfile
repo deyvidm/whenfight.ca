@@ -28,6 +28,9 @@ RUN rm -rf ./*
 # Copy the static content from the builder stage to the working directory in the container
 COPY --from=builder /app/build .
 
+# Copy the custom Nginx configuration file
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+
 # Change the ownership of all files in /usr/share/nginx/html to nginx
 RUN chown -R nginx:nginx .
 

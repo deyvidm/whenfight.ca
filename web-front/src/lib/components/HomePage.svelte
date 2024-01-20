@@ -39,11 +39,9 @@
                     parsed = parsed.sort((a,b)=>{
                         return new Date(a.isodate).getTime() - new Date(b.isodate).getTime();
                     })
-                }).finally(()=>{
-                    doneDudes++;
                 })
             }); 
-        isLoaded = parsed.length == doneDudes  
+        isLoaded = true 
     }
     onMount(fetchData);
 </script>
