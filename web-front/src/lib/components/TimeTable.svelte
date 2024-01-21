@@ -1,6 +1,7 @@
 <script>
     export let parsed = Array();
-    export let isLoaded = false;
+    export let isLoaded = false; 
+    export let hideFinished = false;
 </script>
 
 <div class="rounded-b-box rounded-se-box relative overflow-x-auto">
@@ -19,6 +20,11 @@
                 </thead>
                 <tbody>
                     {#each parsed as entry}
+                    {#if hideFinished && entry.eta.toLowerCase() === 'finished'}
+                        {#if false}
+                            <!-- Skip entry -->
+                        {/if}
+                    {:else}
                         <tr>
                             <td>{entry.style}</td>
                             <td>{entry.day}<br />{entry.mat}</td>
@@ -36,6 +42,7 @@
                                 {/if}
                             </td>
                         </tr>
+                    {/if}
                     {/each}
                 </tbody>
             {:else}

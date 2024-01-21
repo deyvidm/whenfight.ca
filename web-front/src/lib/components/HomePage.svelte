@@ -9,6 +9,7 @@
      export let who;
     let parsed = Array();
     let isLoaded = false
+    let hideFinished = false;
     $: if (who) {
         refresh()
     }
@@ -43,6 +44,9 @@
         isLoaded = true 
     }
 
+    function toggleValue() {
+        hideFinished = !hideFinished;
+    }
 </script>
 
 <div class="rounded-b-box rounded-se-box relative overflow-x-auto">
@@ -60,7 +64,13 @@
         </select>
         
         <button class="btn btn-primary" on:click={refresh}>Refresh</button>
-
-        <TimeTable isLoaded={isLoaded} parsed={parsed} ></TimeTable>
+        <button class="btn" on:click={toggleValue}>
+            {#if hideFinished}
+                Show Finished Matches
+            {:else}
+                Hide Finished Matches
+            {/if}
+        </button>
+        <TimeTable isLoaded={isLoaded} parsed={parsed} hideFinished={hideFinished}></TimeTable>
     </div>
 </div>
