@@ -66,8 +66,8 @@
                     <option value={dude}>{dude}</option>
                 {/each}
             </select>
-            <button class="btn btn-primary" on:click={refresh}>Refresh</button>
             <button class="btn btn-outline" on:click={toggleValue}>
+            <button class="btn btn-primary" on:click={refresh}>Refresh</button>
                 {#if hideFinished}
                     Show Finished Matches
                 {:else}
