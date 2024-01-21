@@ -43,7 +43,7 @@
             }); 
         isLoaded = true 
     }
-    onMount(fetchData);
+
 </script>
 
 <div class="rounded-b-box rounded-se-box relative overflow-x-auto">
