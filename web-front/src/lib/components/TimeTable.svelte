@@ -23,8 +23,18 @@
                             <td>{entry.style}</td>
                             <td>{entry.day}<br />{entry.mat}</td>
                             <td>{entry.eta}</td>
-                            <td>{entry.home_participant}</td>
-                            <td>{entry.opponent}</td>
+                            <td>{entry.home_participant} 
+                                {#if (entry.winner == entry.home_participant)}
+                                    <span class="badge badge-success">W</span><br>
+                                    <span>{entry.result}</span>
+                                {/if}
+                            </td>
+                            <td>{entry.opponent}
+                                {#if (entry.winner == entry.opponent)}
+                                    <span class="badge badge-success">W</span><br>
+                                    <div>{entry.result}</div>
+                                {/if}
+                            </td>
                         </tr>
                     {/each}
                 </tbody>

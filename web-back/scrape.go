@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"regexp"
+	"slices"
 	"strconv"
 	"strings"
 	"time"
@@ -16,50 +17,44 @@ import (
 	"golang.org/x/text/language"
 )
 
-func parseParticipantInfo(participant string, infoSplit []string) map[string]string {
-	whoWon := map[string]string{}
-	if strings.EqualFold(infoSplit[1], "finished") {
-		// the match has finished and splits[4] or splits[6] is the match result string
-		// so we need to pop it out, and save it to append to the name later
-		wonByRegex := regexp.MustCompile(`(?i)(won by)`)
-		if wonByRegex.MatchString(infoSplit[4]) {
-			whoWon[infoSplit[2]] = infoSplit[4]
-			infoSplit = append(infoSplit[:4], infoSplit[5:]...)
-		} else {
-			whoWon[infoSplit[4]] = infoSplit[6]
-			infoSplit = append(infoSplit[:6], infoSplit[7:]...)
-		}
-	}
-	participants := reorderParticipants(participant, infoSplit[2:])
-	for k, v := range participants {
-		if _, ok := whoWon[v]; ok {
-			participants[k] = fmt.Sprintf("%s\n%s", v, whoWon[v])
-			break
-		}
-	}
-	return participants
-}
-
-func reorderParticipants(participant string, splits []string) map[string]string {
-	participants := map[string]string{
-		"home_participant": splits[0],
-		"home_club":        splits[1],
-		"opponent":         splits[2],
-		"opponent_club":    splits[3],
+func parseMatchInfo(participant string, infoSplit []string) map[string]string {
+	for i, v := range infoSplit {
+		fmt.Println("\t", i, v)
 	}
 
-	if strings.EqualFold(splits[2], participant) {
-		participants = map[string]string{
-			"home_participant": splits[2],
-			"home_club":        splits[3],
-			"opponent":         splits[0],
-			"opponent_club":    splits[1],
-		}
-	}
+	// the last two elems are the participant names; grab em and remove them from splits
+	participantNames := []string{infoSplit[len(infoSplit)-1], infoSplit[len(infoSplit)-2]}
+	infoSplit = infoSplit[:len(infoSplit)-2]
+	pInfo := map[string]string{}
+
+	wonByRegex := regexp.MustCompile(`(?i)(won by)`)
+	matRegex := regexp.MustCompile(`\d+-\d+`)
+	etaRegex := regexp.MustCompile(`(?i)(\d+:\d+ [ap]m|finished)`)
+
 	c := cases.Title(language.English)
-	participants["home_participant"] = c.String(participants["home_participant"])
-	participants["opponent"] = c.String(participants["opponent"])
-	return participants
+	for i, v := range infoSplit {
+		if etaRegex.MatchString(v) {
+			pInfo["eta"] = v
+		}
+		if matRegex.MatchString(v) {
+			pInfo["mat"] = v
+		}
+		if wonByRegex.MatchString(v) {
+			pInfo["winner"] = infoSplit[i-2]
+			pInfo["result"] = v
+		}
+		if slices.Contains(participantNames, v) {
+			if strings.EqualFold(v, participant) {
+				pInfo["home_participant"] = c.String(v)
+				pInfo["home_club"] = infoSplit[i+1]
+			} else {
+				pInfo["opponent"] = c.String(v)
+				pInfo["opponent_club"] = infoSplit[i+1]
+			}
+		}
+	}
+
+	return pInfo
 }
 
 func getCompDates(datestr string) map[string]time.Time {
@@ -119,18 +114,16 @@ func fetchDudeInfo(eventID, participant, clubID string) ([]map[string]interface{
 			}
 		}
 
-		participants := parseParticipantInfo(participant, infoSplit)
-
 		dayRegex := regexp.MustCompile(`(?i)(saturday|sunday)`)
 		styleRegex := regexp.MustCompile(`(?i)(gi|no gi)`)
 		matchInfo := map[string]interface{}{
-			"mat":     infoSplit[0],
 			"day":     dayRegex.FindString(categories.Eq(i).Text()),
 			"style":   styleRegex.FindString(categories.Eq(i).Text()),
-			"eta":     infoSplit[1],
 			"isodate": s.Find(".isodate").Text(),
 		}
-		for k, v := range participants {
+
+		mInfo := parseMatchInfo(participant, infoSplit)
+		for k, v := range mInfo {
 			matchInfo[k] = v
 		}
 
