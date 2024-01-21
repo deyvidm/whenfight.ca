@@ -60,20 +60,20 @@
                 bind:value={who}
                 class="select select-bordered w-full max-w"
             >
-                <!-- <option disabled selected value="who">Who's grappling?</option> -->
+                <option disabled selected value="who">Who's grappling?</option>
                 <option value="everybody">Everybody</option>
                 {#each currentdudes as dude}
                     <option value={dude}>{dude}</option>
                 {/each}
             </select>
             <button class="btn btn-outline" on:click={toggleValue}>
-            <button class="btn btn-primary" on:click={refresh}>Refresh</button>
                 {#if hideFinished}
                     Show Finished Matches
                 {:else}
                     Hide Finished Matches
                 {/if}
             </button>
+            <button class="btn btn-primary" on:click={refresh}>Refresh</button>
     </div>
 
         <TimeTable isLoaded={isLoaded} parsed={parsed} hideFinished={hideFinished}></TimeTable>
