@@ -1,5 +1,4 @@
 <script>
-    import { onMount } from "svelte";
     import currentdudes from "$lib/current-dudes.json";
     import TimeTable from "./TimeTable.svelte";
     import {fetchDudeData} from "$lib/shared.js";
