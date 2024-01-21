@@ -18,10 +18,6 @@ import (
 )
 
 func parseMatchInfo(participant string, infoSplit []string) map[string]string {
-	for i, v := range infoSplit {
-		fmt.Println("\t", i, v)
-	}
-
 	// the last two elems are the participant names; grab em and remove them from splits
 	participantNames := []string{infoSplit[len(infoSplit)-1], infoSplit[len(infoSplit)-2]}
 	infoSplit = infoSplit[:len(infoSplit)-2]
