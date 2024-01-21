@@ -16,6 +16,30 @@ import (
 	"golang.org/x/text/language"
 )
 
+func parseParticipantInfo(participant string, infoSplit []string) map[string]string {
+	whoWon := map[string]string{}
+	if strings.EqualFold(infoSplit[1], "finished") {
+		// the match has finished and splits[4] or splits[6] is the match result string
+		// so we need to pop it out, and save it to append to the name later
+		wonByRegex := regexp.MustCompile(`(?i)(won by)`)
+		if wonByRegex.MatchString(infoSplit[4]) {
+			whoWon[infoSplit[2]] = infoSplit[4]
+			infoSplit = append(infoSplit[:4], infoSplit[5:]...)
+		} else {
+			whoWon[infoSplit[4]] = infoSplit[6]
+			infoSplit = append(infoSplit[:6], infoSplit[7:]...)
+		}
+	}
+	participants := reorderParticipants(participant, infoSplit[2:])
+	for k, v := range participants {
+		if _, ok := whoWon[v]; ok {
+			participants[k] = fmt.Sprintf("%s\n%s", v, whoWon[v])
+			break
+		}
+	}
+	return participants
+}
+
 func reorderParticipants(participant string, splits []string) map[string]string {
 	participants := map[string]string{
 		"home_participant": splits[0],
@@ -94,10 +118,8 @@ func fetchDudeInfo(eventID, participant, clubID string) ([]map[string]interface{
 				infoSplit = append(infoSplit, line)
 			}
 		}
-		if len(infoSplit) > 6 {
-			infoSplit = infoSplit[:6]
-		}
-		participants := reorderParticipants(participant, infoSplit[2:6])
+
+		participants := parseParticipantInfo(participant, infoSplit)
 
 		dayRegex := regexp.MustCompile(`(?i)(saturday|sunday)`)
 		styleRegex := regexp.MustCompile(`(?i)(gi|no gi)`)
