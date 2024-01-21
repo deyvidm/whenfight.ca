@@ -52,25 +52,30 @@
 <div class="rounded-b-box rounded-se-box relative overflow-x-auto">
     <span></span>
     <div class="card w-150 bg-base-100 shadow-xl space-y-4">
-        <select
-            bind:value={who}
-            class="select select-bordered w-full max-w"
-        >
-            <option disabled selected value="who">Who's grappling?</option>
-            <option value="everybody">Everybody</option>
-            {#each currentdudes as dude}
-                <option value={dude}>{dude}</option>
-            {/each}
-        </select>
-        
-        <button class="btn btn-primary" on:click={refresh}>Refresh</button>
-        <button class="btn" on:click={toggleValue}>
-            {#if hideFinished}
-                Show Finished Matches
-            {:else}
-                Hide Finished Matches
-            {/if}
-        </button>
+        <div class="card-body">
+            <div class="label">
+                <span class="label-text">Who's grappling?</span>
+              </div>
+            <select
+                bind:value={who}
+                class="select select-bordered w-full max-w"
+            >
+                <!-- <option disabled selected value="who">Who's grappling?</option> -->
+                <option value="everybody">Everybody</option>
+                {#each currentdudes as dude}
+                    <option value={dude}>{dude}</option>
+                {/each}
+            </select>
+            <button class="btn btn-primary" on:click={refresh}>Refresh</button>
+            <button class="btn btn-outline" on:click={toggleValue}>
+                {#if hideFinished}
+                    Show Finished Matches
+                {:else}
+                    Hide Finished Matches
+                {/if}
+            </button>
+    </div>
+
         <TimeTable isLoaded={isLoaded} parsed={parsed} hideFinished={hideFinished}></TimeTable>
     </div>
 </div>
