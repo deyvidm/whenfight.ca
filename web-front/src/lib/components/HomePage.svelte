@@ -33,15 +33,15 @@
         if (who == "everybody") {   
             dudes = currentdudes;
         }
-        dudes.forEach(dude => {
-                fetchDudeData([dude]).then(resp => {
-                    parsed = [...parsed, ...resp.data];
-                    parsed = parsed.sort((a,b)=>{
-                        return new Date(a.isodate).getTime() - new Date(b.isodate).getTime();
-                    })
-                })
-            }); 
-        isLoaded = true 
+
+        fetchDudeData(dudes).then(resp => {
+            parsed = [...parsed, ...resp.data];
+            parsed = parsed.sort((a,b)=>{
+                return new Date(a.isodate).getTime() - new Date(b.isodate).getTime();
+            })
+        }).finally(() => {
+            isLoaded = true;
+        })
     }
 
     function toggleValue() {
