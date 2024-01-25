@@ -24,6 +24,7 @@ type Request struct {
 var redisClient *redis.Client
 
 func main() {
+	// Connect to Redis
 	redisClient = redis.NewClient(&redis.Options{
 		Addr:     "redis:6379",
 		Password: "", // no password set

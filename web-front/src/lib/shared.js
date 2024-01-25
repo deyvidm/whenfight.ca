@@ -1,7 +1,7 @@
 import axios from "axios";
 
 export function fetchDudeData(participants) {
-    const url = "http://34.228.255.157/fetchDudeInfo";
+    const url = "http://localhost/fetchDudeInfo";
     return axios.post(url, {
             "clubID": "47454",
             "eventID": "13528",
