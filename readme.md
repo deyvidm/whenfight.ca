@@ -30,10 +30,7 @@ To run the project, you need Docker installed on your machine. Then, follow thes
 3. Open your browser and navigate to `http://localhost`.
 
 ## Screenshots
-
-![Show Everybody](readme-assets/image1.png)
-![Show a single participant](readme-assets/image2.png)
-![Web-Brwoser display](readme-assets/image3.png)
+![Web-Browser display](image.png)
 ## Notes
 
 I rushed to develop and deploy this project just two days before the tournament. Due to time constraints, I had to compromise on some best practices to ensure its usability before the deadline. The project currently includes several hardcoded values that should be modified for future tournaments or to support participants from other gyms. Additionally, further investigation is needed for the Docker deployment configuration, as the default network appeared to fail on AWS EC2 instances.
