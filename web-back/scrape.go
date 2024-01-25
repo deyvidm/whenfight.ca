@@ -25,7 +25,7 @@ func parseMatchInfo(participant string, infoSplit []string) map[string]string {
 
 	wonByRegex := regexp.MustCompile(`(?i)(won by)`)
 	matRegex := regexp.MustCompile(`\d+-\d+`)
-	etaRegex := regexp.MustCompile(`(?i)(\d+:\d+ [ap]m|finished)`)
+	etaRegex := regexp.MustCompile(`(?i)(\d+:\d+ [ap]m|finished|running)`)
 
 	c := cases.Title(language.English)
 	for i, v := range infoSplit {
