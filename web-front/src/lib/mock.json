@@ -1,0 +1,55 @@
+[
+  {
+    "day": "Sunday",
+    "eta": "Finished",
+    "home_club": "Current BJJ",
+    "home_participant": "Dominik Janik",
+    "isodate": "2024-01-21T00:00:00Z",
+    "mat": "7-10",
+    "opponent": "Gabriel Lajante",
+    "opponent_club": "Octa BJJ",
+    "result": "Won by Submission - 02:23",
+    "style": "Gi",
+    "winner": "Dominik Janik"
+  },
+  {
+    "day": "Sunday",
+    "eta": "Finished",
+    "home_club": "Current BJJ",
+    "home_participant": "Dominik Janik",
+    "isodate": "2024-01-21T00:00:00Z",
+    "mat": "7-24",
+    "opponent": "Enzo Da Rosa Muçambite",
+    "opponent_club": "Gracie Barra North York Toronto",
+    "result": "Won by Decision - 03:00",
+    "style": "Gi",
+    "winner": "ENZO DA ROSA MUÇAMBITE"
+  },
+  {
+    "day": "Sunday",
+    "eta": "Finished",
+    "home_club": "Current BJJ",
+    "home_participant": "Dominik Janik",
+    "isodate": "2024-01-21T00:00:00Z",
+    "mat": "7-26",
+    "opponent": "Mikey Del Greco",
+    "opponent_club": "SBG Canada",
+    "result": "Won by Submission - 00:43",
+    "style": "Gi",
+    "winner": "Dominik Janik"
+  },
+  {
+    "day": "Sunday",
+    "eta": "Finished",
+    "home_club": "Current BJJ",
+    "home_participant": "Dominik Janik",
+    "isodate": "2024-01-21T00:00:00Z",
+    "mat": "7-35",
+    "opponent": "Sofia Paprica",
+    "opponent_club": "The Forge Martial Arts",
+    "result": "Won by points - 03:00",
+    "style": "Gi",
+    "winner": "Dominik Janik"
+  }
+]
+
