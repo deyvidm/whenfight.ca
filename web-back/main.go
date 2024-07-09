@@ -51,6 +51,7 @@ func main() {
 	// Create a new router using gorilla/mux and enable CORS
 	router := mux.NewRouter()
 	router.HandleFunc("/fetchDudeInfo", handleFetchDudeInfo)
+	router.HandleFunc("/health", handleHealth)
 	corsRouter := cors.Default().Handler(router)
 	log.Fatal(http.ListenAndServe(":8080", corsRouter))
 }
@@ -60,12 +61,16 @@ func checkRedisConnection() error {
 	if err != nil {
 		return err
 	}
-	fmt.Printf("PONG: %s\n", pong)
+	fmt.Printf("PING: %s\n", pong)
 	if pong != "PONG" {
 		return fmt.Errorf("unexpected response from Redis server: %s", pong)
 	}
 
 	return nil
+}
+
+func handleHealth(w http.ResponseWriter, r *http.Request) {
+	w.Write([]byte("Health OK:)"))
 }
 
 func handleFetchDudeInfo(w http.ResponseWriter, r *http.Request) {
