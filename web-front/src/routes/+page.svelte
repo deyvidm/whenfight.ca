@@ -11,5 +11,5 @@
 <div
     class="rounded-b-box rounded-se-box relative overflow-x-auto flex items-center"
 >
-    <HomePage parsed={data.data} bind:who={who}></HomePage>
+    <HomePage parsed={data.matches} bind:who={who}></HomePage>
 </div>

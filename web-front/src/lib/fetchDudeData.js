@@ -1,7 +1,7 @@
 import mock from "$lib/mock.json";
 
 export async function fetchDudeData(dudes) {
-    return { data: mock } // mock
+    // return { matches: mock } // mock
     // const url = "http://web-back:8080/fetchDudeInfo";
     const url = "http://localhost:8080/fetchDudeInfo";
         try {
@@ -16,7 +16,14 @@ export async function fetchDudeData(dudes) {
                     "participants": dudes,
                 })
             });
-            return await response.json();
+
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+              }
+
+            const data = await response.json();
+            // console.log("fetchDudeData", JSON.stringify(data))
+            return JSON.stringify(data)
         } catch (error) {
             return { error: error }
         }
