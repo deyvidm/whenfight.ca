@@ -29,7 +29,6 @@
             return;
         }
 
-        parsed = [];
         let dudes = [who];
         if (who == everybody) {
             dudes = currentdudes;
@@ -42,11 +41,7 @@
                 "Content-Type": "application/json",
             },
         });
-
-        const matches = await response.json();
-
-        parsed = matches;
-
+        parsed = await response.json();
         isLoaded = true;
     }
 </script>
