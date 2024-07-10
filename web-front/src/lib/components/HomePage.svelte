@@ -19,6 +19,10 @@
         // refresh();
     });
 
+    function toggleHideFinished() {
+        hideFinished = !hideFinished;
+    }
+
     function refresh() {
         parsed = parsed.sort((a, b) => {
             return (
@@ -27,38 +31,7 @@
         });
     }
 
-    // async function fetchData() {
-    //     isLoaded = false;
-    //     if (who == "who") {
-    //         isLoaded = true;
-    //         return;
-    //     }
-
-    //     parsed = [];
-    //     let doneDudes = 0;
-    //     let dudes = [who];
-    //     if (who == "everybody") {
-    //         dudes = currentdudes;
-    //     }
-
-    //     fetchDudeData(dudes)
-    //         .then((resp) => {
-    //             parsed = [...parsed, ...resp.data];
-    //             parsed = parsed.sort((a, b) => {
-    //                 return (
-    //                     new Date(a.isodate).getTime() -
-    //                     new Date(b.isodate).getTime()
-    //                 );
-    //             });
-    //         })
-    //         .finally(() => {
-    //             isLoaded = true;
-    //         });
-    // }
-
-    async function handleSubmit(event) {
-        event.preventDefault();
-        
+    async function handleSelectWho() {
         isLoaded = false;
         if (who == "who") {
             isLoaded = true;
@@ -70,29 +43,17 @@
         if (who == "everybody") {
             dudes = currentdudes;
         }
-        
-        dudes = ["Michael Canavan"]
-        const response = await fetch('/', {
-            method: 'POST',
+
+        const response = await fetch("/api/data", {
+            method: "POST",
             body: JSON.stringify(dudes),
-        })
+        });
 
-        const data = await response.json();
-        console.log("darta", JSON.parse(JSON.parse(data.data)));
+        const matches = await response.json();
 
-
-        // parsed = [...parsed, ...data.matches];
-        // parsed = parsed.sort((a, b) => {
-        //     return (
-        //         new Date(a.isodate).getTime() -
-        //         new Date(b.isodate).getTime()
-        //     );
-        // });
+        parsed = [...parsed, ...matches];
+        refresh();
         isLoaded = true;
-    }
-
-    function toggleValue() {
-        hideFinished = !hideFinished;
     }
 </script>
 
@@ -100,25 +61,22 @@
     <span></span>
     <div class="card w-150 bg-base-100 shadow-xl space-y-4">
         <div class="card-body">
-            <form method="POST" on:submit={handleSubmit}>
-                <div class="label">
-                    <span class="label-text">Who's grappling?</span>
-                </div>
-                <select
-                    bind:value={who}
-                    on:change={() => handleSubmit(event)}
-                    class="select select-bordered w-full max-w"
-                >
-                    <option disabled selected value="who"
-                        >Who's grappling?</option>
-                    <option value="everybody">Everybody</option>
-                    {#each currentdudes as dude}
-                        <option value={dude}>{dude}</option>
-                    {/each}
-                </select>
-                <button class="btn btn-primary">Refresh</button>
-            </form>
-            <button class="btn btn-outline" on:click={toggleValue}>
+            <div class="label">
+                <span class="label-text">Who's grappling?</span>
+            </div>
+            <select
+                bind:value={who}
+                on:change={handleSelectWho}
+                class="select select-bordered w-full max-w"
+            >
+                <option disabled selected value="who">Who's grappling?</option>
+                <option value="everybody">Everybody</option>
+                {#each currentdudes as dude}
+                    <option value={dude}>{dude}</option>
+                {/each}
+            </select>
+            <button class="btn btn-primary">Refresh</button>
+            <button class="btn btn-outline" on:click={toggleHideFinished}>
                 {#if hideFinished}
                     Show Finished Matches
                 {:else}
@@ -127,7 +85,6 @@
             </button>
         </div>
 
-        <di>{parsed}</di>
-        <!-- <TimeTable {isLoaded} {parsed} {hideFinished}></TimeTable> -->
+        <TimeTable {isLoaded} {parsed} {hideFinished}></TimeTable>
     </div>
 </div>

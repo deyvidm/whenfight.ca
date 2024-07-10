@@ -1,9 +1,10 @@
 export async function POST({ request }) {
 
     const url = "http://web-back:8080/fetchDudeInfo";
+    // const url = "http://localhost:8080/fetchDudeInfo";
+
     try {
-        const body = await request.json();
-        const {participants} = body;
+        const participants = await request.json();
         const response = await fetch(url, {
             method: 'POST',
             headers: {
