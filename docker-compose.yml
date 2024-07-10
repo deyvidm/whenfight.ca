@@ -23,7 +23,7 @@ services:
       context: ./web-front
       dockerfile: Dockerfile
     ports:
-      - "80:3000"
+      - "3000:3000"
     depends_on:
       - web-back
     networks:

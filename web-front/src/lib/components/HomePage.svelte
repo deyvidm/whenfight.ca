@@ -6,53 +6,47 @@
     /**
      * @type {string}
      */
-    export let who;
-    export let parsed = Array();
+    let defaultWho = "who";
+    let everybody = "everybody"
+    let who = defaultWho;
+    let parsed = Array();
     let isLoaded = true;
     let hideFinished = false;
-    $: if (who) {
-        refresh();
-    }
 
     onMount(() => {
-        // console.log("data", parsed);
-        // refresh();
+        who = everybody;
+        handleSelectWho();
     });
 
     function toggleHideFinished() {
         hideFinished = !hideFinished;
     }
 
-    function refresh() {
-        parsed = parsed.sort((a, b) => {
-            return (
-                new Date(a.isodate).getTime() - new Date(b.isodate).getTime()
-            );
-        });
-    }
-
     async function handleSelectWho() {
         isLoaded = false;
-        if (who == "who") {
+        if (who == defaultWho) {
             isLoaded = true;
             return;
         }
 
         parsed = [];
         let dudes = [who];
-        if (who == "everybody") {
+        if (who == everybody) {
             dudes = currentdudes;
         }
 
         const response = await fetch("/api/data", {
             method: "POST",
             body: JSON.stringify(dudes),
+            headers: {
+                "Content-Type": "application/json",
+            },
         });
 
         const matches = await response.json();
 
-        parsed = [...parsed, ...matches];
-        refresh();
+        parsed = matches;
+
         isLoaded = true;
     }
 </script>
@@ -69,13 +63,13 @@
                 on:change={handleSelectWho}
                 class="select select-bordered w-full max-w"
             >
-                <option disabled selected value="who">Who's grappling?</option>
+                <option disabled selected value="who">Select a competitor</option>
                 <option value="everybody">Everybody</option>
                 {#each currentdudes as dude}
                     <option value={dude}>{dude}</option>
                 {/each}
             </select>
-            <button class="btn btn-primary">Refresh</button>
+            <button class="btn btn-primary" on:click={handleSelectWho}>Refresh</button>
             <button class="btn btn-outline" on:click={toggleHideFinished}>
                 {#if hideFinished}
                     Show Finished Matches
@@ -85,6 +79,8 @@
             </button>
         </div>
 
-        <TimeTable {isLoaded} {parsed} {hideFinished}></TimeTable>
+        {#if who != defaultWho}
+            <TimeTable {isLoaded} {parsed} {hideFinished}></TimeTable>
+        {/if}
     </div>
 </div>

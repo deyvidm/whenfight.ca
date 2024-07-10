@@ -1,7 +1,7 @@
 export async function POST({ request }) {
 
-    const url = "http://web-back:8080/fetchDudeInfo";
-    // const url = "http://localhost:8080/fetchDudeInfo";
+    // const url = "http://web-back:8080/fetchDudeInfo";
+    const url = "http://localhost:8080/fetchDudeInfo";
 
     try {
         const participants = await request.json();
